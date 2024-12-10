@@ -3,21 +3,21 @@ from dotenv import load_dotenv
 import json
 from pathlib import Path
 import os
-from rag_system import build_rag_system
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.chains import RetrievalQA
+from flask_cors import CORS
+
 # Flask 앱 생성
 app = Flask(__name__)
+CORS(app) 
 
 # 환경변수 로드
 load_dotenv(override=True)
-api_key = os.getenv('OPENAI_API_KEY')
-embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+embeddings = OpenAIEmbeddings()
 
 # 디렉터리 내 모든 JSON 파일 불러오기
 def load_all_json_files(directory_path):
@@ -82,7 +82,7 @@ def build_rag_system(directory_path):
     return chain
 
 # RAG 시스템을 한 번만 초기화
-directory_path = "C:\\Users\\SeoyeonKim\\Documents\\hanyangUni\\4th_grade\\1st_sem\\AI_application\\dev\\AI_backend\\RAG_dataset"
+directory_path = "./RAG_dataset" 
 chain = build_rag_system(directory_path)
 
 # 사용자 질문을 처리하는 엔드포인트
@@ -157,4 +157,4 @@ def ask_question():
 
 # 서버 실행 (로컬 환경에서 테스트 시 사용)
 if __name__ == "__main__":
-    app.run(host="192.168.0.47", port=8000)
+    app.run(host="0.0.0.0", port=8000) 
